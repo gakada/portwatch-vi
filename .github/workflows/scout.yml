@@ -25,7 +25,7 @@ jobs:
         run: |
           git remote add upstream https://github.com/4lwayz/portwatch-vi.git
           git fetch upstream
-          git merge -X theirs upstream/HEAD
+          git merge -X theirs --allow-unrelated-histories upstream/HEAD
 
       - uses: actions/setup-node@v4
         with:
