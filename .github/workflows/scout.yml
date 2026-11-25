@@ -23,6 +23,8 @@ jobs:
 
       - name: Pull from upstream
         run: |
+          git config user.name "portwatch-scout[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git remote add upstream https://github.com/4lwayz/portwatch-vi.git
           git fetch upstream
           git merge -X theirs --allow-unrelated-histories upstream/HEAD
