@@ -21,6 +21,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Pull from upstream
+        run: |
+          git remote add upstream https://github.com/4lwayz/portwatch-vi.git
+          git pull --rebase upstream HEAD
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
