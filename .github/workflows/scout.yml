@@ -2,7 +2,7 @@ name: Scout
 
 on:
   schedule:
-    - cron: '0 * * * *' # every hour
+    - cron: '17 */3 * * *' # every 3 hours, at 00:17, 03:17, 06:17 … UTC
   workflow_dispatch: {}
 
 permissions:
