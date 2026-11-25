@@ -28,6 +28,7 @@ jobs:
           git remote add upstream https://github.com/4lwayz/portwatch-vi.git
           git fetch upstream
           git merge -X theirs --allow-unrelated-histories upstream/HEAD
+          git checkout HEAD~1 -- .github/workflows/scout.yml
 
       - uses: actions/setup-node@v4
         with:
@@ -54,7 +55,7 @@ jobs:
             echo "No changes."
           else
             git commit -m "scout: update $(date -u '+%F %H:%M') UTC"
-            git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+            git pull -X theirs --allow-unrelated-histories origin "${GITHUB_REF_NAME}"
             git push
           fi
 
