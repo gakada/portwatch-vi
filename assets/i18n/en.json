@@ -95,6 +95,7 @@
   "effort.fps": "{n} FPS",
   "effort.reproduced": "Independently reproduced",
   "effort.verified": "Verified by PortWatch",
+  "effort.gpuTitle": "Runs on {v} graphics cards",
   "effort.verifiedTitle": "PortWatch has seen this build running",
   "effort.self": "Self-reported",
   "effort.selfTitle": "Based on the project's own README; not yet reproduced by others",

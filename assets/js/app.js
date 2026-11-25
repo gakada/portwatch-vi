@@ -332,6 +332,12 @@ function renderChanges(changes) {
 /* ---------- Race ---------- */
 function isGtaSpecific(e) { return /gta/i.test(e.target || ''); }
 
+// The graphics cards a build has been run on (`gpu`: ["AMD"], ["NVIDIA"] or both, main one first),
+// from its README's test machine or the owner's report. Left off when nobody has said.
+const GPU_CLASS = { AMD: 'tag-amd', NVIDIA: 'tag-nvidia' };
+const gpuTags = (e) => (Array.isArray(e.gpu) ? e.gpu : []).filter((v) => GPU_CLASS[v])
+  .map((v) => `<span class="tag ${GPU_CLASS[v]}" title="${esc(t('effort.gpuTitle', { v }))}">${esc(v)}</span>`).join('');
+
 function renderRace() {
   const { data, filter, sort } = state;
   // Only public code is ranked; private builds get their own unranked list below the race.
@@ -389,8 +395,10 @@ function privateCard(e) {
     </div>
     <div class="tags">
       ${bases ? `<span class="tag tag-based">${t('private.basedOn', { names: bases })}</span>` : ''}
+      ${gpuTags(e)}
       ${e.evidence ? `<span class="tag tag-self" title="${esc(t('private.evidenceTitle'))}">${esc(t('private.evidence', { x: e.evidence }))}</span>` : ''}
       <span class="tag tag-stale">${esc(t('private.noCode'))}</span>
+      ${e.proof?.url ? `<a class="tag tag-proof" href="${esc(safeHttp(e.proof.url))}" target="_blank" rel="noopener nofollow" title="${esc(e.proof.url)}">${esc(e.proof.label || 'Watch')} ↗</a>` : ''}
     </div>
     <p class="e-summary">${esc(e.summary)}</p>
     <div class="pb-ladder">${ladderCells(e)}</div>
@@ -494,6 +502,7 @@ function effortCard(e, rank, open, overallRank = null) {
   const tags = [
     e.approach && `<span class="tag">${esc(e.approach)}</span>`,
     e.target && `<span class="tag ${isGtaSpecific(e) ? 'tag-gta' : ''}">${esc(e.target)}</span>`,
+    gpuTags(e),
     e.verification === 'reproduced'
       ? `<span class="tag tag-ok">${esc(t('effort.reproduced'))}</span>`
       // The owner has seen the build run (owner's call): stronger than the README alone.
@@ -574,7 +583,7 @@ function renderWatchlist(data) {
     rows.map((e) => `
     <div class="w-row" role="row" id="effort-${esc(e.id)}">
       <div class="w-name"><a href="${esc(repoUrl(e.repo, e.branch))}" target="_blank" rel="noopener">${esc(e.name)}</a><p>${esc(e.summary)}</p></div>
-      <span class="w-muted">${esc(e.approach)}${e.target && /gta|ps5/i.test(e.target) ? ` · ${esc(e.target)}` : ''}</span>
+      <span class="w-muted">${esc(e.approach)}${e.target && /gta|ps5/i.test(e.target) ? ` · ${esc(e.target)}` : ''}${e.gpu?.length ? `<span class="w-gpu">${gpuTags(e)}</span>` : ''}</span>
       <div class="w-bar"><div class="bar-track"><div class="bar-fill" data-width="${e._s.score}"></div></div><b>${pct(e._s.score)}%</b></div>
       <span class="w-muted">★ ${fmtK(e.stats?.stars)}</span>
       <span class="w-muted">${esc(ago(e.stats?.pushedAt))}</span>

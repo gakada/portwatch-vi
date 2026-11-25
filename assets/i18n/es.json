@@ -149,6 +149,7 @@
   "effort.fps": "{n} FPS",
   "effort.reproduced": "Reproducido por terceros",
   "effort.verified": "Verificado por PortWatch",
+  "effort.gpuTitle": "Funciona con tarjetas gráficas {v}",
   "effort.verifiedTitle": "PortWatch ha visto esta build funcionando",
   "effort.self": "Autodeclarado",
   "effort.selfTitle": "Basado en el propio README del proyecto; aún no reproducido por otros",

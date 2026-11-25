@@ -48,6 +48,8 @@
   --fg-green: #0d7a4e;
   --fg-violet: #5136d6;
   --fg-red: #b4262b;
+  --fg-amd: #c8102e;
+  --fg-nvidia: #4a7a00;
   --fg-orange: #a14708;
   --fg-claim: #8c3d06;
 }
@@ -65,6 +67,7 @@
     --ok-bg: #0f2a1f; --ok-line: #1d5a3f; --no-bg: #2c1214; --no-line: #5c2428;
     --fg-pink: #ff7aa8; --fg-gold: #ffcf70; --fg-green: #4fd69a; --fg-violet: #ad9bff;
     --fg-red: #ff8a8e; --fg-orange: #ffa66b; --fg-claim: #ffb27a;
+    --fg-amd: #ff7b7b; --fg-nvidia: #a3d94a;
     --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .35);
     --shadow-lg: 0 2px 4px rgba(0, 0, 0, .3), 0 24px 60px rgba(0, 0, 0, .5);
   }
@@ -80,6 +83,7 @@
   --ok-bg: #0f2a1f; --ok-line: #1d5a3f; --no-bg: #2c1214; --no-line: #5c2428;
   --fg-pink: #ff7aa8; --fg-gold: #ffcf70; --fg-green: #4fd69a; --fg-violet: #ad9bff;
   --fg-red: #ff8a8e; --fg-orange: #ffa66b; --fg-claim: #ffb27a;
+  --fg-amd: #ff7b7b; --fg-nvidia: #a3d94a;
   --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .35);
   --shadow-lg: 0 2px 4px rgba(0, 0, 0, .3), 0 24px 60px rgba(0, 0, 0, .5);
 }
@@ -506,6 +510,12 @@ html:not([lang="en"]) .nav-links a { padding-inline: 9px; }
 .tag-ok { background: rgba(22, 163, 106, .12); color: var(--fg-green); }
 .tag-proven { background: rgba(122, 92, 255, .1); color: var(--fg-violet); }
 .tag-proof { background: rgba(255, 46, 126, .1); color: var(--fg-pink); }
+/* Graphics-card tags: outlined, so they read apart from the filled status tags. */
+.tag-amd, .tag-nvidia { background: transparent; box-shadow: inset 0 0 0 1.5px currentColor; font-weight: 700; letter-spacing: .02em; }
+.tag-amd { color: var(--fg-amd); }
+.tag-nvidia { color: var(--fg-nvidia); }
+.w-gpu { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.w-gpu .tag { font-size: 11px; padding: 2px 8px; }
 a.tag-proof:hover { text-decoration: underline; }
 .tag-stale { background: rgba(229, 72, 77, .1); color: var(--fg-red); }
 .tag-claim { background: rgba(255, 138, 61, .16); color: var(--fg-orange); }
