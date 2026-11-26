@@ -8,4 +8,4 @@ export const SUPABASE_KEY = 'sb_publishable_6bI_-WqCLu73dqaIOznDag_FmpTBSij';
 // true = public pages don't count views, and /api/live answers null without asking the database.
 // Was on from 2026-11-24 ~00:30 UTC after ~290k requests an hour swamped the free-plan database; turned off
 // again once views were sampled and the live count moved behind Cloudflare's cache (functions/api/live.js).
-export const STATS_PAUSED = false;
+export const STATS_PAUSED = true;

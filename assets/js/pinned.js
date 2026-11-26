@@ -24,7 +24,7 @@ const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '
 // Plain text with line breaks; https links become links. Everything else is escaped.
 export function linkify(text) {
   return String(text).split(/(https:\/\/[^\s<>"']+)/g).map((part, i) => {
-    if (i % 2 === 0) return esc(part);
+    if (i % 2 === 0) return esc(part).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
     const url = part.replace(/[.,;:!?)\]]+$/, '');
     const shown = url.replace(/^https:\/\/(www\.)?/, '').replace(/\/$/, '');
     return `<a href="${esc(url)}" target="_blank" rel="noopener nofollow">${esc(shown.length > 42 ? `${shown.slice(0, 40)}…` : shown)}</a>${esc(part.slice(url.length))}`;
