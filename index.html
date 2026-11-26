@@ -226,10 +226,8 @@
           <p class="sub" data-i18n="race.sub">The efforts with public code, ranked by how close each is to running the game. Scores come from each project's public README, commits and issues. Self-reported claims are labelled. Private builds are listed below the race, without a rank.</p>
         </div>
         <div class="controls">
-          <div class="chips" role="group" aria-label="Filter efforts" data-i18n-attr="aria-label:race.filterLabel">
+          <div class="chips" id="race-chips" role="group" aria-label="Filter efforts" data-i18n-attr="aria-label:race.filterLabel">
             <button class="chip is-on" data-filter="all" data-i18n="race.all">All</button>
-            <button class="chip" data-filter="gta" data-i18n="race.gta">GTA VI-specific</button>
-            <button class="chip" data-filter="generic" data-i18n="race.generic">Any-game layers</button>
           </div>
           <label class="sort"><span data-i18n="race.sort">Sort</span>
             <select id="sort">

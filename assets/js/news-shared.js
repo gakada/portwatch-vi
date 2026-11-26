@@ -7,6 +7,13 @@ export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&a
 export const NEWS_ID_RE = /^[a-z0-9][a-z0-9-]{0,80}$/;
 export const articlePath = (n) => (NEWS_ID_RE.test(n?.id || '') ? `news/${n.id}.html` : null);
 
+// When a post went up: `publishedAt`, a UTC time ("2026-11-25T11:02:05Z"). Older posts that only
+// have a `date` (the day) show the day alone.
+export const newsTime = (n) => (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?(\.\d+)?Z$/.test(n?.publishedAt || '') && Number.isFinite(Date.parse(n.publishedAt)) ? n.publishedAt : null);
+// Newest first: by time where both have one, else by day; equal keys keep their order in the data.
+const newsKey = (n) => newsTime(n) || `${n?.date || ''}T00:00:00Z`;
+export const byNewest = (a, b) => (newsKey(a) < newsKey(b) ? 1 : newsKey(a) > newsKey(b) ? -1 : 0);
+
 export const COVER_ICON = {
   Leak: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 2h8l5 5v8.5l-2-2V8h-4V4H6v16h7.5l2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm12.5 13.5L21 18l-3 4-3-4 2.5-2.5Z"/></svg>',
   Takedown: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20Zm0 2a8 8 0 0 0-6.3 12.9L16.9 5.7A8 8 0 0 0 12 4Zm6.3 3.1L7.1 18.3A8 8 0 0 0 18.3 7.1Z"/></svg>',

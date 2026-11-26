@@ -193,7 +193,7 @@ $kept = @($threads.Values | Where-Object { ($_.mode -eq 'all' -and $_.posts.Coun
 
 # ---------- Signals: code-host repos mentioned, and how the tracker knows them ----------
 $known = @{}
-foreach ($e in $tracker.efforts) { $known[$e.repo.ToLower()] = "tracked effort ""$($e.id)"" ($($e.tier))" }
+foreach ($e in $tracker.efforts) { if ($e.repo) { $known[$e.repo.ToLower()] = "tracked effort ""$($e.id)"" ($($e.tier))" } }
 foreach ($x in $tracker.tools) { $known[$x.repo.ToLower()] = 'in toolkit' }
 foreach ($x in $tracker.candidates) { $known[$x.repo.ToLower()] = "candidate ($($x.status))" }
 foreach ($x in $tracker.ignored) { if ($x.repo) { $known[$x.repo.ToLower()] = "ignored: $($x.reason)" } }

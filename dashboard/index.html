@@ -35,6 +35,12 @@
       <div class="db-pin-grid">
         <form id="pin-form" class="db-pin-form">
           <textarea id="pin-input" rows="6" placeholder="Write a message for everyone on the site. Line breaks and https:// links work."></textarea>
+          <div class="db-pin-gif">
+            <input type="text" id="pin-gif" placeholder="GIF under the message: paste a Giphy, Tenor or Imgur link" spellcheck="false" autocomplete="off">
+            <label class="toggle db-pin-upload">Upload GIF<input type="file" id="pin-gif-file" accept="image/gif,image/webp,image/png,image/jpeg" hidden></label>
+            <button type="button" class="toggle" id="pin-gif-clear" hidden>Remove</button>
+          </div>
+          <p class="fine db-pin-gifhelp">Giphy: paste the page link. Tenor or Imgur: right-click the GIF and copy the image address. Or upload a file from this PC (up to 8 MB); it's stored on the site.</p>
           <div class="db-pin-row">
             <span class="fine" id="pin-chars">0/500</span>
             <div class="db-actions">

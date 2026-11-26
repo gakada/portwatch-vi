@@ -50,6 +50,8 @@
   --fg-red: #b4262b;
   --fg-amd: #c8102e;
   --fg-nvidia: #4a7a00;
+  --fg-intel: #0a5fb4;
+  --fg-mac: #4b5160;
   --fg-orange: #a14708;
   --fg-claim: #8c3d06;
 }
@@ -67,7 +69,7 @@
     --ok-bg: #0f2a1f; --ok-line: #1d5a3f; --no-bg: #2c1214; --no-line: #5c2428;
     --fg-pink: #ff7aa8; --fg-gold: #ffcf70; --fg-green: #4fd69a; --fg-violet: #ad9bff;
     --fg-red: #ff8a8e; --fg-orange: #ffa66b; --fg-claim: #ffb27a;
-    --fg-amd: #ff7b7b; --fg-nvidia: #a3d94a;
+    --fg-amd: #ff7b7b; --fg-nvidia: #a3d94a; --fg-intel: #6cb6ff; --fg-mac: #c9ced8;
     --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .35);
     --shadow-lg: 0 2px 4px rgba(0, 0, 0, .3), 0 24px 60px rgba(0, 0, 0, .5);
   }
@@ -83,7 +85,7 @@
   --ok-bg: #0f2a1f; --ok-line: #1d5a3f; --no-bg: #2c1214; --no-line: #5c2428;
   --fg-pink: #ff7aa8; --fg-gold: #ffcf70; --fg-green: #4fd69a; --fg-violet: #ad9bff;
   --fg-red: #ff8a8e; --fg-orange: #ffa66b; --fg-claim: #ffb27a;
-  --fg-amd: #ff7b7b; --fg-nvidia: #a3d94a;
+  --fg-amd: #ff7b7b; --fg-nvidia: #a3d94a; --fg-intel: #6cb6ff; --fg-mac: #c9ced8;
   --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .35);
   --shadow-lg: 0 2px 4px rgba(0, 0, 0, .3), 0 24px 60px rgba(0, 0, 0, .5);
 }
@@ -336,6 +338,8 @@ html:not([lang="en"]) .nav-links a { padding-inline: 9px; }
 .pin-text { margin: 0; font-size: 15px; line-height: 1.5; color: rgba(255, 255, 255, .95); white-space: pre-line; overflow-wrap: anywhere; }
 .pin-text a { color: #fff; font-weight: 600; text-decoration: underline; text-decoration-color: rgba(255, 255, 255, .45); text-underline-offset: 2px; }
 .pin-text a:hover { text-decoration-color: #fff; }
+.pin-gif { display: block; max-width: 100%; max-height: 240px; margin-top: 10px; border-radius: 12px; }
+.pin-text[hidden] + .pin-gif { margin-top: 2px; }
 @keyframes pin-in { from { opacity: 0; transform: translateY(10px); } }
 
 /* ---------- Overall progress ---------- */
@@ -511,9 +515,11 @@ html:not([lang="en"]) .nav-links a { padding-inline: 9px; }
 .tag-proven { background: rgba(122, 92, 255, .1); color: var(--fg-violet); }
 .tag-proof { background: rgba(255, 46, 126, .1); color: var(--fg-pink); }
 /* Graphics-card tags: outlined, so they read apart from the filled status tags. */
-.tag-amd, .tag-nvidia { background: transparent; box-shadow: inset 0 0 0 1.5px currentColor; font-weight: 700; letter-spacing: .02em; }
+.tag-amd, .tag-nvidia, .tag-intel, .tag-mac { background: transparent; box-shadow: inset 0 0 0 1.5px currentColor; font-weight: 700; letter-spacing: .02em; }
 .tag-amd { color: var(--fg-amd); }
 .tag-nvidia { color: var(--fg-nvidia); }
+.tag-intel { color: var(--fg-intel); }
+.tag-mac { color: var(--fg-mac); }
 .w-gpu { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
 .w-gpu .tag { font-size: 11px; padding: 2px 8px; }
 a.tag-proof:hover { text-decoration: underline; }

@@ -5,6 +5,20 @@
 
 export const PINNED_MAX = 500;
 const AVATAR_RE = /^assets\/img\/[\w/.-]+\.(png|jpe?g|webp|svg)$/;
+
+// An optional GIF under the text (`gif` in pinned.json): a file in this repo under assets/img/pinned/
+// (the dashboard uploads it there), or an https link straight to the image on Giphy, Tenor or Imgur.
+const GIF_LOCAL_RE = /^assets\/img\/pinned\/[\w.-]+\.(gif|webp|png|jpe?g)$/i;
+const GIF_HOST_RE = /^https:\/\/(media\d*\.giphy\.com|i\.giphy\.com|media\d*\.tenor\.com|c\.tenor\.com|i\.imgur\.com)\/[^\s"'<>]+$/i;
+export const pinnedGif = (g) => (GIF_LOCAL_RE.test(g || '') || GIF_HOST_RE.test(g || '') ? g : null);
+
+// What the owner pastes, made into something pinnedGif accepts: a Giphy page or embed link becomes
+// its GIF file; anything else is returned trimmed (and rejected by pinnedGif if it isn't allowed).
+export function gifFromLink(s) {
+  const v = String(s || '').trim();
+  const giphy = v.match(/^https:\/\/(?:www\.)?giphy\.com\/(?:gifs|embed|stickers)\/(?:[\w-]*-)?([A-Za-z0-9]{6,})\/?(?:[?#].*)?$/);
+  return giphy ? `https://media.giphy.com/media/${giphy[1]}/giphy.gif` : v;
+}
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 // Plain text with line breaks; https links become links. Everything else is escaped.
@@ -18,10 +32,12 @@ export function linkify(text) {
 }
 
 // Fills the .pinned card inside `box` and shows it. Returns false (card stays hidden) when there's nothing to pin.
-// `base` prefixes the avatar path, for pages outside the site root (the dashboard passes '../').
-export function fillPinned(box, p, { ago = () => '', when = (iso) => new Date(iso).toLocaleString(), base = '' } = {}) {
+// `base` prefixes local paths, for pages outside the site root (the dashboard passes '../').
+// `gifSrc` lets the dashboard preview a GIF that isn't on the site yet (a just-picked file).
+export function fillPinned(box, p, { ago = () => '', when = (iso) => new Date(iso).toLocaleString(), base = '', gifSrc = '' } = {}) {
   const text = String(p?.text ?? '').trim().slice(0, PINNED_MAX);
-  if (!box || !p || p.show === false || !text) { if (box) box.hidden = true; return false; }
+  const gif = pinnedGif(p?.gif);
+  if (!box || !p || p.show === false || (!text && !gif)) { if (box) box.hidden = true; return false; }
 
   const name = String(p.name || '4lwayz').slice(0, 40);
   box.querySelector('.pin-name').textContent = name;
@@ -38,7 +54,21 @@ export function fillPinned(box, p, { ago = () => '', when = (iso) => new Date(is
     av.prepend(img);
   }
 
-  box.querySelector('.pin-text').innerHTML = linkify(text);
+  const textEl = box.querySelector('.pin-text');
+  textEl.innerHTML = linkify(text);
+  textEl.hidden = !text;
+  textEl.parentElement.querySelector('.pin-gif')?.remove();
+  if (gif) {
+    const img = new Image();
+    img.className = 'pin-gif';
+    img.alt = '';
+    img.decoding = 'async';
+    img.referrerPolicy = 'no-referrer'; // Giphy and the like don't learn which page it's on
+    img.onerror = () => img.remove();
+    img.src = gifSrc || (gif.startsWith('assets/') ? base + gif : gif);
+    textEl.after(img);
+  }
+
   const time = box.querySelector('.pin-time');
   const ok = Number.isFinite(Date.parse(p.updated));
   time.hidden = !ok;

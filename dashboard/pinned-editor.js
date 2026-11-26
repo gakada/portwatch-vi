@@ -3,7 +3,7 @@
 // file to main through GitHub's API. The deploy workflow then puts it live in about two minutes.
 // Publishing needs the owner's fine-grained GitHub token (this repo only, Contents: read and write),
 // kept in this browser's localStorage on this PC. It's sent only to api.github.com.
-import { fillPinned, PINNED_MAX } from '../assets/js/pinned.js';
+import { fillPinned, PINNED_MAX, pinnedGif, gifFromLink } from '../assets/js/pinned.js';
 
 const REPO = '4lwayz/portwatch-vi';
 const FILE = 'data/pinned.json';
@@ -23,6 +23,9 @@ const ago = (iso) => {
 let current = { ...DEFAULTS }; // the file as last loaded or published
 let sha = null; // its blob sha on main, needed to update it
 let busy = false;
+let gif = ''; // the GIF under the message: a link, or assets/img/pinned/… once a file is uploaded
+let uploaded = { path: '', url: '' }; // a file uploaded this session: shown from this PC until the site has it
+const GIF_MAX = 8 * 1024 * 1024;
 
 const token = () => { try { return localStorage.getItem(TOKEN_KEY) || ''; } catch { return ''; } };
 const note = (html, kind = '') => { const el = $('#pin-note'); el.className = `fine pin-note ${kind}`; el.innerHTML = html; };
@@ -30,8 +33,8 @@ const note = (html, kind = '') => { const el = $('#pin-note'); el.className = `f
 const b64encode = (str) => { let bin = ''; for (const b of new TextEncoder().encode(str)) bin += String.fromCharCode(b); return btoa(bin); };
 const b64decode = (b64) => new TextDecoder().decode(Uint8Array.from(atob(b64.replace(/\s/g, '')), (c) => c.charCodeAt(0)));
 
-function gh(method = 'GET', body) {
-  return fetch(method === 'GET' ? `${API}?ref=main` : API, {
+function gh(method = 'GET', body, api = API) {
+  return fetch(method === 'GET' ? `${api}?ref=main` : api, {
     method,
     cache: 'no-store',
     headers: {
@@ -74,21 +77,69 @@ function showState() {
 function preview() {
   const text = $('#pin-input').value;
   $('#pin-chars').textContent = `${text.length}/${PINNED_MAX}`;
-  const shown = fillPinned($('#pin-preview .pinned'), { ...current, show: true, text, updated: new Date().toISOString() }, { ago, base: '../' });
+  const gifSrc = gif && gif === uploaded.path ? uploaded.url : '';
+  const shown = fillPinned($('#pin-preview .pinned'), { ...current, show: true, text, gif, updated: new Date().toISOString() }, { ago, base: '../', gifSrc });
   $('#pin-empty').hidden = shown;
+  $('#pin-gif-clear').hidden = !gif;
+}
+
+// The GIF box: Giphy page links become the GIF itself; other links must point straight at a GIF.
+function setGif(value) {
+  gif = gifFromLink(value);
+  $('#pin-gif').value = gif;
+  if (gif && !pinnedGif(gif)) note('That link isn\'t a GIF from Giphy, Tenor or Imgur. On Tenor or Imgur, right-click the GIF and copy the image address.', 'is-bad');
+  preview();
+}
+
+const fileBase64 = (file) => new Promise((resolve, reject) => {
+  const r = new FileReader();
+  r.onload = () => resolve(String(r.result).replace(/^data:[^,]*,/, ''));
+  r.onerror = () => reject(r.error);
+  r.readAsDataURL(file);
+});
+
+// Uploads a GIF from this PC to assets/img/pinned/ on main (a commit of its own), then uses it.
+async function uploadGif(file) {
+  if (!file || busy) return;
+  if (!token()) { $('#pin-token-box').open = true; note('Add your GitHub token first (below).', 'is-bad'); return; }
+  const ext = (file.name.match(/\.(gif|webp|png|jpe?g)$/i)?.[1] || '').toLowerCase();
+  if (!ext) { note('Pick a .gif, .webp, .png or .jpg file.', 'is-bad'); return; }
+  if (file.size > GIF_MAX) { note(`That file is ${(file.size / 1048576).toFixed(1)} MB; the limit is 8 MB.`, 'is-bad'); return; }
+  const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+Z$/, '').replace('T', '-');
+  const slug = file.name.replace(/\.[^.]+$/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'gif';
+  const path = `assets/img/pinned/${stamp}-${slug}.${ext}`;
+  busy = true;
+  $('#pin-form').classList.add('is-busy');
+  note('Uploading the GIF…');
+  try {
+    const res = await gh('PUT', { message: `Pinned GIF: ${slug}.${ext}`, content: await fileBase64(file), branch: 'main' }, `https://api.github.com/repos/${REPO}/contents/${path}`);
+    if (!res.ok) throw new Error(ghError(res));
+    if (uploaded.url) URL.revokeObjectURL(uploaded.url);
+    uploaded = { path, url: URL.createObjectURL(file) };
+    setGif(path);
+    note('GIF uploaded. Publish to pin it under the message.', 'is-ok');
+  } catch (err) {
+    note(String(err.message || err), 'is-bad');
+  } finally {
+    busy = false;
+    $('#pin-form').classList.remove('is-busy');
+    $('#pin-gif-file').value = '';
+  }
 }
 
 async function publish(show) {
   if (busy) return;
   if (!token()) { $('#pin-token-box').open = true; $('#pin-token').focus(); note('Add your GitHub token first (below).', 'is-bad'); return; }
   const text = $('#pin-input').value.trim();
-  if (show && !text) { note('Write a message first.', 'is-bad'); return; }
+  if (show && gif && !pinnedGif(gif)) { note('Fix or remove the GIF link first.', 'is-bad'); return; }
+  if (show && !text && !gif) { note('Write a message or add a GIF first.', 'is-bad'); return; }
 
   const next = {
     show,
     name: current.name || DEFAULTS.name,
     avatar: current.avatar || DEFAULTS.avatar,
     text: show ? text : current.text || text,
+    ...((show ? gif : current.gif) ? { gif: show ? gif : current.gif } : {}),
     updated: show ? new Date().toISOString().replace(/\.\d+Z$/, 'Z') : current.updated,
   };
   const oneLine = next.text.replace(/\s+/g, ' ');
@@ -149,6 +200,10 @@ async function main() {
   $('#pin-input').maxLength = PINNED_MAX;
   bindToken();
   $('#pin-input').addEventListener('input', preview);
+  $('#pin-gif').addEventListener('change', () => setGif($('#pin-gif').value));
+  $('#pin-gif').addEventListener('input', () => { gif = gifFromLink($('#pin-gif').value); preview(); });
+  $('#pin-gif-file').addEventListener('change', () => uploadGif($('#pin-gif-file').files?.[0]));
+  $('#pin-gif-clear').addEventListener('click', () => { setGif(''); note('GIF removed. Publish to update the site.'); });
   $('#pin-form').addEventListener('submit', (ev) => { ev.preventDefault(); publish(true); });
   $('#pin-hide').addEventListener('click', () => publish(false));
   try {
@@ -157,6 +212,8 @@ async function main() {
     note(String(err.message || err), 'is-bad');
   }
   $('#pin-input').value = current.text || '';
+  gif = pinnedGif(current.gif) || '';
+  $('#pin-gif').value = gif;
   showState();
   preview();
 }

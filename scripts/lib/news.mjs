@@ -121,6 +121,7 @@ async function finalize(articles, { seen, existing, today, log }) {
     out.push({
       id: `${date}-${short(a.title, 40).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`,
       date,
+      publishedAt: new Date().toISOString().replace(/\.\d+Z$/, 'Z'), // when it goes up, shown next to the day
       category: a.category,
       title: short(a.title, 110),
       dek: short(a.dek, 240),

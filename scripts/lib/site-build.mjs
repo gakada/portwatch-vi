@@ -3,7 +3,7 @@
 // Pure functions with no Node or DOM APIs, so the same code can be checked in a browser;
 // scripts/build-site.mjs does the file I/O in GitHub Actions.
 
-import { esc, NEWS_ID_RE, articlePath, coverHtml } from '../../assets/js/news-shared.js';
+import { esc, NEWS_ID_RE, articlePath, coverHtml, newsTime, byNewest } from '../../assets/js/news-shared.js';
 
 export const SITE_URL = 'https://portwatch-vi.xyz/';
 const SITE_NAME = 'PortWatch VI';
@@ -18,6 +18,15 @@ const articleUrl = (n) => `${SITE_URL}${articlePath(n).replace(/\.html$/, '')}`;
 const isDay = (d) => /^\d{4}-\d{2}-\d{2}$/.test(d || '');
 const httpsOnly = (u) => (/^https:\/\/[^\s"'<>]+$/.test(u || '') ? u : null);
 const fmtDay = (d) => new Date(`${d}T12:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+// Static pages can't know the reader's time zone, so a post's time is shown in UTC ("25 November 2026, 11:02 UTC").
+const fmtWhen = (n) => {
+  const at = newsTime(n);
+  if (!at) return fmtDay(n.date);
+  const d = new Date(at);
+  const hm = `${String(d.getUTCHours()).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')}`;
+  return `${fmtDay(at.slice(0, 10))}, ${hm} UTC`;
+};
+const whenTag = (n) => `<time datetime="${esc(newsTime(n) || n.date)}">${esc(fmtWhen(n))}</time>`;
 const jsonLd = (o) => JSON.stringify(o, null, 1).replace(/</g, '\\u003c');
 const isoTime = (s) => { const t = Date.parse(s || ''); return Number.isFinite(t) ? new Date(t).toISOString() : null; };
 
@@ -26,7 +35,7 @@ export function publishableNews(data) {
   const seen = new Set();
   return (data.news || [])
     .filter((n) => n && NEWS_ID_RE.test(n.id || '') && isDay(n.date) && n.title && !seen.has(n.id) && seen.add(n.id))
-    .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+    .sort(byNewest);
 }
 
 const BRAND = `<svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
@@ -114,7 +123,7 @@ const card = (n, small) => `
       <a class="story ${small ? 'is-small' : ''}" href="${esc(n.id)}.html">
         ${media(n)}
         <div class="story-body">
-          <time datetime="${n.date}">${esc(fmtDay(n.date))}</time>
+          ${whenTag(n)}
           <h3>${esc(n.title)}</h3>
           <p>${esc(n.dek)}</p>
         </div>
@@ -130,13 +139,13 @@ function sourceItem(s) {
 function articlePage(n, others) {
   const url = articleUrl(n);
   const img = httpsOnly(n.image?.url);
-  const modified = isDay(n.updatedAt) ? n.updatedAt : n.date;
+  const modified = isDay(n.updatedAt) ? n.updatedAt : newsTime(n) || n.date;
   const ld = {
     '@context': 'https://schema.org',
     '@type': 'NewsArticle',
     headline: String(n.title).slice(0, 110),
     description: n.dek || undefined,
-    datePublished: n.date,
+    datePublished: newsTime(n) || n.date,
     dateModified: modified,
     image: [img || SOCIAL_IMAGE],
     articleSection: n.category || undefined,
@@ -157,7 +166,7 @@ function articlePage(n, others) {
     <article class="reader reader-page">
       ${media(n)}
       <div class="reader-inner">
-        <p class="meta">${esc(n.category)} · <time datetime="${n.date}">${esc(fmtDay(n.date))}</time></p>
+        <p class="meta">${esc(n.category)} · ${whenTag(n)}</p>
         <h1>${esc(n.title)}</h1>
         ${n.dek ? `<p class="dek">${esc(n.dek)}</p>` : ''}
         <div class="article">
@@ -184,7 +193,7 @@ ${more.length ? `    <section class="more-news" aria-labelledby="more-title">
     image: img || SOCIAL_IMAGE,
     imageIsSocial: !img,
     head: `
-  <meta property="article:published_time" content="${n.date}">
+  <meta property="article:published_time" content="${esc(newsTime(n) || n.date)}">
   <meta property="article:modified_time" content="${modified}">
   <meta property="article:section" content="${esc(n.category)}">
   <script type="application/ld+json">${jsonLd(ld)}</script>`,
@@ -236,7 +245,7 @@ function rssFeed(news, updated) {
     <title>${esc(n.title)}</title>
     <link>${link}</link>
     <guid isPermaLink="true">${link}</guid>
-    <pubDate>${new Date(`${n.date}T12:00:00Z`).toUTCString()}</pubDate>
+    <pubDate>${new Date(newsTime(n) || `${n.date}T12:00:00Z`).toUTCString()}</pubDate>
     <category>${esc(n.category)}</category>
     <description>${esc(n.dek || '')}</description>
   </item>`;
