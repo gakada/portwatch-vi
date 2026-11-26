@@ -58,7 +58,7 @@
   "cd.overdue": "Overdue by {d}d {h}h. Still not released.",
 
   "pin.label": "Pinned",
-  "pin.badge": "Editor",
+  "pin.badge": "Creator",
 
   "ov.title": "Overall progress · closest effort to playable",
   "ov.furthest": "Furthest milestone",
