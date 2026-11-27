@@ -6,9 +6,9 @@
 //   database at most once a minute per Cloudflare data centre.
 import { SUPABASE_URL, SUPABASE_KEY, STATS_PAUSED } from './config.js';
 
-// Raise it to cut database writes further, or set 1 to count every tab. No SQL change is needed up to 50
-// (track_view clamps the weight). 20 since 2026-11-24: at ~12,000 people on the site, 1 in 5 meant ~500
-// writes a minute and ~1.3 GB of Supabase egress a day.
+// Raise it to cut database writes further, or set 1 to count every tab. Above 20, change track_view too: it
+// caps the weight at 20 since 2026-11-27 (supabase/2026-11-27-view-guard.sql). 20 since 2026-11-24: at
+// ~12,000 people on the site, 1 in 5 meant ~500 writes a minute and ~1.3 GB of Supabase egress a day.
 const SAMPLE = 20;
 
 const backendReady = () => Boolean(SUPABASE_URL && SUPABASE_KEY);

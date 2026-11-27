@@ -152,10 +152,14 @@ export const byStars = (a, b) => (b.stats?.stars || 0) - (a.stats?.stars || 0);
 // lists it under the project it builds on (`basedOn`) without a rank. The headline counts it.
 export const isPrivateBuild = (e) => !(typeof e.repo === 'string' && e.repo.includes('/'));
 
+// Nuked efforts (taken offline) leave the headline, unless the owner kept the progress they made
+// (`nuked.keepScore`: Belobug, DMCA'd on 2026-11-27).
+export const countsInHeadline = (e) => !e.nuked || e.nuked.keepScore === true;
+
 // The headline number: how close the leading effort is, private builds included, plus the top-3 average.
 export function overall(efforts) {
   const scored = efforts
-    .filter((e) => !e.nuked) // taken offline: kept in the data, no longer shown or ranked
+    .filter(countsInHeadline)
     .map((e) => ({ effort: e, ...scoreEffort(e) }))
     .sort((a, b) => b.score - a.score || byStars(a.effort, b.effort));
   const top = scored.slice(0, 3);

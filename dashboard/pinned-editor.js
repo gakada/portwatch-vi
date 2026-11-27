@@ -3,7 +3,7 @@
 // file to main through GitHub's API. The deploy workflow then puts it live in about two minutes.
 // Publishing needs the owner's fine-grained GitHub token (this repo only, Contents: read and write),
 // kept in this browser's localStorage on this PC. It's sent only to api.github.com.
-import { fillPinned, PINNED_MAX, pinnedGif, gifFromLink } from '../assets/js/pinned.js';
+import { fillPinned, PINNED_MAX, pinnedGif, pinnedCta, gifFromLink } from '../assets/js/pinned.js';
 
 const REPO = '4lwayz/portwatch-vi';
 const FILE = 'data/pinned.json';
@@ -68,7 +68,7 @@ async function load() {
 }
 
 function showState() {
-  const live = current.show !== false && String(current.text || '').trim();
+  const live = current.show !== false && (String(current.text || '').trim() || pinnedGif(current.gif) || pinnedCta(current.cta));
   const pill = $('#pin-state');
   pill.textContent = live ? 'Live' : 'Not shown';
   pill.classList.toggle('is-off', !live);
@@ -132,7 +132,7 @@ async function publish(show) {
   if (!token()) { $('#pin-token-box').open = true; $('#pin-token').focus(); note('Add your GitHub token first (below).', 'is-bad'); return; }
   const text = $('#pin-input').value.trim();
   if (show && gif && !pinnedGif(gif)) { note('Fix or remove the GIF link first.', 'is-bad'); return; }
-  if (show && !text && !gif) { note('Write a message or add a GIF first.', 'is-bad'); return; }
+  if (show && !text && !gif && !pinnedCta(current.cta)) { note('Write a message or add a GIF first.', 'is-bad'); return; }
 
   const next = {
     show,
@@ -140,9 +140,10 @@ async function publish(show) {
     avatar: current.avatar || DEFAULTS.avatar,
     text: show ? text : current.text || text,
     ...((show ? gif : current.gif) ? { gif: show ? gif : current.gif } : {}),
+    ...(current.cta ? { cta: current.cta } : {}), // the call-out has no editor here yet: keep it as it is
     updated: show ? new Date().toISOString().replace(/\.\d+Z$/, 'Z') : current.updated,
   };
-  const oneLine = next.text.replace(/\s+/g, ' ');
+  const oneLine = (next.text || next.cta?.title || '').replace(/\s+/g, ' ');
   const body = {
     message: show ? `Pinned message: "${oneLine.length > 60 ? `${oneLine.slice(0, 57)}...` : oneLine}"` : 'Pinned message: taken down',
     content: b64encode(`${JSON.stringify(next, null, 2)}\n`),

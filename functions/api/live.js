@@ -9,6 +9,9 @@
 import { SUPABASE_URL, SUPABASE_KEY, STATS_PAUSED } from '../../assets/js/config.js';
 
 const TTL_MS = 60_000;
+// More than this is not a real crowd (the busiest day, 2026-11-24, peaked around 12,000) but fake page views:
+// before 2026-11-26 the pill showed about 10 million. Show nothing rather than a number like that.
+const MAX_PLAUSIBLE = 100_000;
 let memo = null;     // { body, at } for this isolate
 let pending = null;  // the one Supabase call in flight from this isolate
 
@@ -23,7 +26,7 @@ async function askDatabase() {
     });
     if (!res.ok) return null;
     const n = await res.json();
-    return Number.isInteger(n) ? n : null;
+    return Number.isInteger(n) && n <= MAX_PLAUSIBLE ? n : null;
   } catch {
     return null;
   }

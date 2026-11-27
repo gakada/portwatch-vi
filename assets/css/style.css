@@ -340,6 +340,36 @@ html:not([lang="en"]) .nav-links a { padding-inline: 9px; }
 .pin-text a:hover { text-decoration-color: #fff; }
 .pin-gif { display: block; max-width: 100%; max-height: 240px; margin-top: 10px; border-radius: 12px; }
 .pin-text[hidden] + .pin-gif { margin-top: 2px; }
+/* Call-out under the message (`cta` in pinned.json): a short note and a button, e.g. where to send builds. */
+.pin-cta {
+  margin-top: 12px;
+  padding: 12px 12px 12px 14px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(122, 92, 255, .30), rgba(255, 46, 126, .24) 60%, rgba(255, 138, 61, .20));
+  border: 1px solid rgba(255, 255, 255, .28);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .14);
+}
+.pin-text[hidden] + .pin-cta { margin-top: 2px; }
+.pin-cta-title { display: flex; align-items: center; gap: 7px; margin: 0 0 5px; font-size: 11.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); }
+.pin-cta-title svg { width: 15px; height: 15px; flex: none; fill: currentColor; filter: drop-shadow(0 0 6px rgba(255, 194, 77, .5)); }
+.pin-cta-text { margin: 0 0 11px; font-size: 14px; line-height: 1.45; color: rgba(255, 255, 255, .92); overflow-wrap: anywhere; }
+.pin-cta-text strong { color: #fff; }
+.pin-cta-btn {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px 9px 14px;
+  border-radius: 11px;
+  background: #fff; color: #1a1033;
+  text-decoration: none;
+  box-shadow: 0 6px 18px rgba(255, 46, 126, .35);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.pin-cta-btn:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(255, 46, 126, .5); }
+.pin-cta-btn:focus-visible { outline: 3px solid #fff; outline-offset: 3px; border-radius: 11px; }
+.pin-cta-btn span { display: grid; flex: 1; min-width: 0; line-height: 1.25; }
+.pin-cta-btn b { font-size: 14.5px; font-weight: 800; letter-spacing: -.01em; }
+.pin-cta-btn small { font-size: 12px; font-weight: 600; color: #6a6185; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pin-cta-btn svg { width: 22px; height: 22px; flex: none; padding: 4px; border-radius: 50%; background: var(--grad); fill: none; stroke: #fff; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; box-sizing: border-box; }
+@media (prefers-reduced-motion: reduce) { .pin-cta-btn { transition: none; } .pin-cta-btn:hover { transform: none; } }
 @keyframes pin-in { from { opacity: 0; transform: translateY(10px); } }
 
 /* ---------- Overall progress ---------- */
@@ -874,6 +904,8 @@ a.tag { text-decoration: none; }
   .pin-avatar b { font-size: 17px; }
   .pin-bubble { padding: 9px 12px 11px; }
   .pin-text { font-size: 14.5px; }
+  .pin-cta { padding: 11px 10px 10px 12px; }
+  .pin-cta-text { font-size: 13.5px; }
   .story.is-small { grid-template-columns: 104px minmax(0, 1fr); }
   .reader-inner { padding: 20px 20px 26px; }
 }

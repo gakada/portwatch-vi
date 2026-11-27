@@ -262,16 +262,36 @@ create policy "admins read views" on public.pageviews for select to authenticate
 -- Older rows have w = 1.
 alter table public.pageviews add column if not exists w smallint not null default 1;
 
+-- View guard (2026-11-27, supabase/2026-11-27-view-guard.sql): before 2026-11-26 the live pill showed about
+-- 10 million people, because anyone with the public key could send made-up tab ids at weight 50. Each view now
+-- keeps a salted, daily-rotating hash of the address (private.client_hash; raw addresses are never stored).
+alter table public.pageviews add column if not exists ip_hash text;
+create index if not exists pageviews_ip_ts on public.pageviews (ip_hash, ts) where ip_hash is not null;
+
 -- The 4-argument version is dropped first: two overloads would leave PostgREST unable to choose. p_w has no
 -- default, so old copies of the site that still send only the 4 original arguments match nothing and aren't counted.
 drop function if exists public.track_view(text, text, text, boolean);
 drop function if exists public.track_view(text, text, text, boolean, integer);
 create or replace function public.track_view(p_page text, p_w integer, p_ref text default null, p_sid text default null, p_new boolean default false) returns void
-language sql security definer set search_path = '' as $$
-  insert into public.pageviews (page, ref, sid, new_session, w)
-  values (left(coalesce(p_page, '/'), 120), left(nullif(p_ref, ''), 120), left(p_sid, 40), coalesce(p_new, false),
-          least(greatest(coalesce(p_w, 1), 1), 50));
-$$;
+language plpgsql volatile security definer set search_path = '' as $$
+declare hdr json; h text;
+begin
+  -- Browsers send the page's Origin with this cross-site call, so copies of the site hosted elsewhere aren't
+  -- counted. A script can fake the header; the per-address limits below cover that.
+  hdr := nullif(current_setting('request.headers', true), '')::json;
+  if lower(coalesce(hdr ->> 'origin', '')) <> 'https://portwatch-vi.xyz' then return; end if;
+  -- The site's tab ids: 20 hex characters, or 'nostorage' when the browser blocks sessionStorage.
+  if p_sid is null or not (p_sid ~ '^[0-9a-f]{20}$' or p_sid = 'nostorage') then return; end if;
+  h := private.client_hash();
+  -- At most 30 views per address in 10 minutes: far more than people browsing, far fewer than a script.
+  if h is not null and (select count(*) from (
+      select 1 from public.pageviews where ip_hash = h and ts > now() - interval '10 minutes' limit 30) x) >= 30 then
+    return;
+  end if;
+  insert into public.pageviews (page, ref, sid, new_session, w, ip_hash)
+  values (left(coalesce(p_page, '/'), 120), left(nullif(p_ref, ''), 120), p_sid, coalesce(p_new, false),
+          least(greatest(coalesce(p_w, 1), 1), 20), h);
+end $$;
 revoke all on function public.track_view(text, integer, text, text, boolean) from public;
 grant execute on function public.track_view(text, integer, text, text, boolean) to anon, authenticated;
 
@@ -300,10 +320,11 @@ begin
   if cached_at > now() - interval '60 seconds' or not pg_try_advisory_xact_lock(hashtext('live_viewers')) then
     return cached_n;
   end if;
+  -- Each address counts as at most 3 sampled tabs (rows from before the hash existed fall back to the tab id).
   select case when s >= 25 then s end into cached_n from (
-    select coalesce(sum(w), 0)::integer as s from (
-      select max(w) as w from public.pageviews
-      where ts >= now() - interval '5 minutes' and sid <> '' group by sid) t) x;
+    select coalesce(sum(n), 0)::integer as s from (
+      select least(count(distinct sid), 3) * max(w) as n from public.pageviews
+      where ts >= now() - interval '5 minutes' and sid <> '' group by coalesce(ip_hash, sid)) t) x;
   update private.live_cache set n = cached_n, at = now() where id = 1;
   return cached_n;
 end $$;
@@ -357,12 +378,15 @@ begin
   if not public.is_admin() then raise exception 'not allowed'; end if;
   return (
     with latest as (
-      select distinct on (sid) sid, page, w from public.pageviews
+      select distinct on (sid) sid, coalesce(ip_hash, sid) as who, page, w from public.pageviews
       where ts >= now() - make_interval(mins => least(greatest(coalesce(p_minutes, 5), 1), 60)) and sid <> ''
       order by sid, ts desc
+    ), per_address as (
+      -- As live_viewers: each address counts as at most 3 sampled tabs.
+      select least(count(*), 3) * max(w) as n from latest group by who
     )
     select json_build_object(
-      'total', (select coalesce(sum(w), 0) from latest),
+      'total', (select coalesce(sum(n), 0) from per_address),
       'pages', coalesce((select json_agg(p) from (
         select page, sum(w) as n from latest group by page order by 2 desc limit 8) p), '[]'::json))
   );
