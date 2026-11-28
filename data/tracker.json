@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-28T07:29:18.956Z",
+  "updated": "2026-11-28T08:04:01.495Z",
   "site": {
     "title": "PortWatch VI",
     "heroImage": "assets/img/hero-miami.jpg"
@@ -858,7 +858,7 @@
         "victory-gta6"
       ],
       "stats": {
-        "stars": 520,
+        "stars": 521,
         "forks": 132,
         "openIssues": 29,
         "createdAt": "2026-11-24T22:58:04Z",
@@ -915,9 +915,9 @@
       ],
       "verification": "portwatch",
       "stats": {
-        "stars": 4354,
-        "forks": 1552,
-        "openIssues": 510,
+        "stars": 4437,
+        "forks": 1577,
+        "openIssues": 539,
         "createdAt": "2026-11-25T23:35:29Z",
         "pushedAt": "2026-11-28T03:52:31Z",
         "archived": false,
@@ -1030,8 +1030,8 @@
       },
       "verification": "portwatch",
       "stats": {
-        "stars": 1493,
-        "forks": 201,
+        "stars": 1500,
+        "forks": 203,
         "openIssues": 136,
         "createdAt": "2026-11-25T12:14:33Z",
         "pushedAt": "2026-11-27T19:44:12Z",
@@ -1525,9 +1525,9 @@
         "fxceless/victory-gta6"
       ],
       "stats": {
-        "stars": 3366,
+        "stars": 3367,
         "forks": 1015,
-        "openIssues": 1232,
+        "openIssues": 1233,
         "createdAt": "2026-11-24T18:02:37Z",
         "pushedAt": "2026-11-28T03:53:23Z",
         "archived": false,
@@ -1576,9 +1576,9 @@
       },
       "verification": "self-reported",
       "stats": {
-        "stars": 13889,
-        "forks": 2413,
-        "openIssues": 2358,
+        "stars": 13897,
+        "forks": 2418,
+        "openIssues": 2359,
         "createdAt": "2026-11-23T21:47:25Z",
         "pushedAt": "2026-11-25T23:27:48Z",
         "commits7d": 100,
@@ -1692,9 +1692,9 @@
       },
       "verification": "self-reported",
       "stats": {
-        "stars": 8764,
+        "stars": 8770,
         "forks": 1223,
-        "openIssues": 1958,
+        "openIssues": 1960,
         "createdAt": "2026-11-20T20:03:21Z",
         "pushedAt": "2026-11-28T04:12:53Z",
         "commits7d": 100,
@@ -1806,7 +1806,7 @@
       "stats": {
         "stars": 400,
         "forks": 55,
-        "openIssues": 34,
+        "openIssues": 37,
         "createdAt": "2026-11-21T12:07:28Z",
         "pushedAt": "2026-11-28T05:59:14Z",
         "commits7d": 100,
@@ -2108,11 +2108,11 @@
       },
       "verification": "self-reported",
       "stats": {
-        "stars": 2051,
+        "stars": 2052,
         "forks": 247,
-        "openIssues": 214,
+        "openIssues": 211,
         "createdAt": "2026-11-20T17:43:52Z",
-        "pushedAt": "2026-11-28T07:06:47Z",
+        "pushedAt": "2026-11-28T08:02:29Z",
         "commits7d": 100,
         "archived": false,
         "missing": false
@@ -2167,7 +2167,7 @@
       "stats": {
         "stars": 541,
         "forks": 105,
-        "openIssues": 104,
+        "openIssues": 108,
         "createdAt": "2026-11-21T00:18:13Z",
         "pushedAt": "2026-11-28T03:54:45Z",
         "commits7d": 100,
@@ -2283,7 +2283,7 @@
         "forks": 15,
         "openIssues": 12,
         "createdAt": "2026-11-20T00:25:27Z",
-        "pushedAt": "2026-11-28T00:04:55Z",
+        "pushedAt": "2026-11-28T07:57:46Z",
         "commits7d": 100,
         "archived": false,
         "missing": false
@@ -2492,7 +2492,7 @@
         "openIssues": 0,
         "createdAt": "2026-11-20T19:20:23Z",
         "pushedAt": "2026-11-26T19:46:18Z",
-        "commits7d": 88,
+        "commits7d": 86,
         "archived": false,
         "missing": false,
         "missingStatus": 404
@@ -3305,7 +3305,7 @@
       "desc": "CLI and desktop app: models to glTF, textures and map data from your own install.",
       "stats": {
         "stars": 129,
-        "pushedAt": "2026-11-28T06:58:22Z"
+        "pushedAt": "2026-11-28T07:55:08Z"
       }
     },
     {
@@ -3374,7 +3374,7 @@
       "kind": "Curated list",
       "desc": "Running list of open-source GTA VI reverse-engineering tools and layers.",
       "stats": {
-        "stars": 850,
+        "stars": 851,
         "pushedAt": "2026-11-27T20:31:09Z"
       }
     },
@@ -8523,17 +8523,12 @@
     {
       "date": "2026-11-28",
       "kind": "new",
-      "text": "Scout spotted igvcc/lucias-project (possible effort, substance 49)."
-    },
-    {
-      "date": "2026-11-28",
-      "kind": "new",
-      "text": "Scout spotted x6j1ZiqfbxA3u12HVk/Project-Americas (possible effort, substance 69)."
-    },
-    {
-      "date": "2026-11-28",
-      "kind": "new",
       "text": "Scout spotted rpfexplorer/ViceViewerVI (possible effort, substance 43)."
+    },
+    {
+      "date": "2026-11-28",
+      "kind": "new",
+      "text": "Scout spotted TaynanGT/Vice-Tay (possible effort, substance 83)."
     },
     {
       "date": "2026-11-28",
@@ -8618,17 +8613,17 @@
     {
       "date": "2026-11-28",
       "kind": "new",
+      "text": "Scout spotted didgori-1121/VIctory-Lite (possible effort, substance 62)."
+    },
+    {
+      "date": "2026-11-28",
+      "kind": "new",
+      "text": "Scout spotted perseval-BLR/VIceport (possible effort, substance 50)."
+    },
+    {
+      "date": "2026-11-28",
+      "kind": "new",
       "text": "Scout spotted kylepelham/El1xr (possible effort, substance 88)."
-    },
-    {
-      "date": "2026-11-28",
-      "kind": "new",
-      "text": "Scout spotted perseval-BLR/VIceport (possible effort, substance 45)."
-    },
-    {
-      "date": "2026-11-28",
-      "kind": "new",
-      "text": "Scout spotted didgori-1121/VIctory-Lite (possible effort, substance 48)."
     },
     {
       "date": "2026-11-28",
@@ -8649,6 +8644,11 @@
       "date": "2026-11-28",
       "kind": "new",
       "text": "Scout spotted thaqifT/Frutiger2 (possible effort, substance 73)."
+    },
+    {
+      "date": "2026-11-28",
+      "kind": "new",
+      "text": "Scout spotted divyeshganta/game-master-6 (possible effort, substance 41)."
     },
     {
       "date": "2026-11-28",
@@ -8719,6 +8719,11 @@
       "date": "2026-11-28",
       "kind": "new",
       "text": "Scout spotted mavis140/mavis-9070xt (possible effort, substance 71)."
+    },
+    {
+      "date": "2026-11-28",
+      "kind": "new",
+      "text": "Scout spotted GreyNadeOfficial/TitanLeo (possible effort, substance 81)."
     },
     {
       "date": "2026-11-28",
@@ -8864,11 +8869,6 @@
       "date": "2026-11-28",
       "kind": "new",
       "text": "Scout spotted fitgirlrecomp/FitGirl (possible effort, substance 61)."
-    },
-    {
-      "date": "2026-11-28",
-      "kind": "new",
-      "text": "Scout spotted progmatios23/scarlett-hle (possible effort, substance 77)."
     },
     {
       "date": "2026-11-28",
@@ -9026,9 +9026,9 @@
       "xbox series emulator"
     ],
     "x": "(\"gta 6\" OR \"gta vi\" OR gta6) (recomp OR emulator OR \"pc port\" OR scarlett) github.com -is:retweet",
-    "lastRun": "2026-11-28T07:29:18.956Z",
-    "lastSummary": "29 refreshed, 1 READMEs changed, 71 new candidates, 2 flagged.",
-    "lastDmcaCheck": "2026-11-28T07:29:18.956Z",
+    "lastRun": "2026-11-28T08:04:01.495Z",
+    "lastSummary": "29 refreshed, 0 READMEs changed, 72 new candidates, 0 flagged.",
+    "lastDmcaCheck": "2026-11-28T08:04:01.495Z",
     "lastEditorRun": "2026-11-26T09:13:40.493Z"
   },
   "headlines": [
@@ -9037,6 +9037,13 @@
       "outlet": "Mashable",
       "link": "https://news.google.com/rss/articles/CBMid0FVX3lxTE9TdXBVeWdzSDFQU1VJdDRtWk81ck9yOVV6U0dEMEMycDFjQ084V244QmNBcDRMcDBCcWRRMGd0UlBqUTc4TjNackQwS0EzVC0xVDNlN1hISlRRMldhcEZYZ0ZZT2c2X1pxVFA0bVZKY0l1TXZqWFVJ?oc=5",
       "date": "2026-11-28T07:17:17.000Z",
+      "via": "Google News"
+    },
+    {
+      "title": "Rockstar spent years making GTA VI. Its leaked Xbox build was running on PC within three days.",
+      "outlet": "Webcoda",
+      "link": "https://news.google.com/rss/articles/CBMijAFBVV95cUxOLXZjaUhwRG1WMmE1ell5dHpXU3Vyb0JVMk5wbUVMNHR5MTB6aExJYW85S1Q4UE1YRXB4MXN3NFp2cWhiajhGR01FQkNZVnhrQnhVZWZMWTVSdGU2TzU2N0lLOFVyUXhZZnpLMkM1S0ZUX0psNExISTM0eUlodFYyTVJYckF6RTFKNXFNMA?oc=5",
+      "date": "2026-11-28T07:06:20.000Z",
       "via": "Google News"
     },
     {
@@ -9233,13 +9240,6 @@
       "outlet": "Side Scrollers Podcast on MSN",
       "link": "https://www.msn.com/en-us/gaming/gaming-platforms/hosts-debate-gta-6-rumors-leaks-and-its-new-direction/vi-AA2inpEH",
       "date": "2026-11-27T11:34:23.000Z",
-      "via": "Bing News"
-    },
-    {
-      "title": "GTA 6 PC port makes significant progress in just days",
-      "outlet": "Skoar! on MSN",
-      "link": "https://www.msn.com/en-in/news/other/gta-6-pc-port-makes-significant-progress-in-just-days/ar-AA2io32T",
-      "date": "2026-11-27T11:30:01.000Z",
       "via": "Bing News"
     }
   ],
